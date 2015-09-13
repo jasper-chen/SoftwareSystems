@@ -10,9 +10,9 @@ License: GNU GPLv3
 
 #define SIZE 5
 
-int *foo() {
+int *foo() { 
     int i;
-    int array[SIZE];
+    static int array[SIZE];
 
     printf("%p\n", array);
 

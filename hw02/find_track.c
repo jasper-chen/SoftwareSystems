@@ -21,9 +21,10 @@ char tracks[][80] = {
 };
 
 
-// Finds all tracks that contain the given string.
-//
-// Prints track number and title.
+/* Finds all tracks that contain the given string.
+    Prints track number and title.
+    search_for: the user's input of type char array
+*/
 void find_track(char search_for[])
 {
     int i;
@@ -34,9 +35,10 @@ void find_track(char search_for[])
     }
 }
 
-// Finds all tracks that match the given pattern.
-//
-// Prints track number and title.
+/* Finds all tracks that match the given pattern.
+    Prints track number and title. 
+    pattern: the user's input of type char array
+*/
 void find_track_regex(char pattern[])
 {
     // Need to be able to convert pattern to a regex_t type

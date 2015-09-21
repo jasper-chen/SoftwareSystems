@@ -3,24 +3,44 @@
 
 int main(int argc, char *argv[])
 {
+	char buffer[100];
 	char ch;
-	int count = 0;
-	/* Appends the output to the end of File instead of writing over it*/
+	int append = 0;
+
 	while ((ch = getopt(argc, argv, "a")) != EOF){
 		switch(ch){
 			case 'a':
-				puts("Test");
+				append = 1;
 				break;
 			default:
 				fprintf(stderr, "Unknown option");
 				return 1;
 		}
 	}
+
 	argv+=optind;
 	argc-=optind;
 
-	for(count = 0; count < argc; count++){
-		printf(stdout, *file);
+	FILE *outputFiles[argc - 1];
+
+	int i;	
+	for (i=0; i < argc; i++){
+		if (append == 0){
+			outputFiles[i] = fopen(argv[i], "w");
+		}
+		else if (append == 1){
+			outputFiles[i] = fopen(argv[i], "a");
+		}
+	}
+
+	while (fscanf(stdin,"%99s", buffer) == 1){
+		for (int i = 0; i < argc; i++){		
+			fprintf(stdout, "%s\n", buffer);
+			fprintf(outputFiles[i], "%s\n", buffer);
+		}	
+	}
+	for (int i = 0; i < argc; i++){
+		fclose(outputFiles[i]);
 	}
 	return 0;
 }

@@ -86,10 +86,65 @@ float my_random_float2()
   return b.f;
 }
 
-// compute a random double using my algorithm
-double my_random_double()
+/* BOX: this union is used to access the bits
+of floating-point values */
+typedef union box {
+  double f;
+  int i;
+} Box;
+
+/* GET_BIT: returns a random bit. For efficiency,
+bits are generated 31 at a time using the
+C library function random () */
+int get_bit ()
 {
-  // TODO: fill this in
+  int bit;
+  static bits = 0;
+  static x;
+  if (bits == 0) {
+  x = random();
+  bits = 31;
+  }
+  
+  bit = x & 1;
+  x = x >> 1;
+  bits--;
+  return bit;
+}
+
+/* RANDF: returns a random floating-point
+  number in the range (0, 1),
+  including 0.0, subnormals, and 1.0 */
+double my_random_double ()
+{
+  int x;
+  int mant, exp, high_exp, low_exp;
+  Box low, high, ans;
+  low.f = 0.0;
+  high.f = 1.0;
+
+  /* extract the exponent fields from low and high */
+  low_exp = (low.i >> 23) & 0xFF;
+  high_exp = (high.i >> 23) & 0xFF;
+
+  /* choose random bits and decrement exp until a 1 appears.
+  the reason for subracting one from high_exp is left
+  as an exercise for the reader */
+
+  for (exp = high_exp-1; exp > low_exp; exp--) {
+    if (get_bit()) break;
+  }
+
+  /* choose a random 23-bit mantissa */
+  mant = random() & 0x7FFFFF;
+
+  /* if the mantissa is zero, half the time we should move
+    to the next exponent range */
+  if (mant == 0 && get_bit()) exp++;
+
+  /* combine the exponent and the mantissa */
+  ans.i = (exp << 23) | mant;
+  return ans.f;
 }
 
 // return a constant (this is a dummy function for time trials)

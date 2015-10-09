@@ -119,7 +119,7 @@ int get_bit_double ()
   static x;
   if (bits == 0) {
   x = random();
-  bits = 52;
+  bits = 63;
   }
   
   bit = x & 1;
@@ -140,8 +140,8 @@ double my_random_double ()
   high.f = 1.0;
 
   /* extract the exponent fields from low and high */
-  low_exp = (low.i >> 52) & 0x0000FF;
-  high_exp = (high.i >> 52) & 0x0000FF;
+  low_exp = (low.i >> 52) & 0x7FF;
+  high_exp = (high.i >> 52) & 0x7FF;
 
   /* choose random bits and decrement exp until a 1 appears.
   the reason for subracting one from high_exp is left
@@ -152,7 +152,7 @@ double my_random_double ()
   }
 
   /* choose a random 52-bit mantissa */
-  mant = random() & 0x7FFFFFFFFFFFF;
+  mant = random() & 0xFFFFFFFFFFFFF;
 
   /* if the mantissa is zero, half the time we should move
     to the next exponent range */

@@ -112,6 +112,22 @@ int get_bit ()
   return bit;
 }
 
+int get_bit_double ()
+{
+  int bit;
+  static bits = 0;
+  static x;
+  if (bits == 0) {
+  x = random();
+  bits = 52;
+  }
+  
+  bit = x & 1;
+  x = x >> 1;
+  bits--;
+  return bit;
+}
+
 /* RANDF: returns a random floating-point
   number in the range (0, 1),
   including 0.0, subnormals, and 1.0 */
@@ -124,26 +140,26 @@ double my_random_double ()
   high.f = 1.0;
 
   /* extract the exponent fields from low and high */
-  low_exp = (low.i >> 23) & 0xFF;
-  high_exp = (high.i >> 23) & 0xFF;
+  low_exp = (low.i >> 52) & 0x0000FF;
+  high_exp = (high.i >> 52) & 0x0000FF;
 
   /* choose random bits and decrement exp until a 1 appears.
   the reason for subracting one from high_exp is left
   as an exercise for the reader */
 
   for (exp = high_exp-1; exp > low_exp; exp--) {
-    if (get_bit()) break;
+    if (get_bit_double()) break;
   }
 
-  /* choose a random 23-bit mantissa */
-  mant = random() & 0x7FFFFF;
+  /* choose a random 52-bit mantissa */
+  mant = random() & 0x7FFFFFFFFFFFF;
 
   /* if the mantissa is zero, half the time we should move
     to the next exponent range */
-  if (mant == 0 && get_bit()) exp++;
+  if (mant == 0 && get_bit_double()) exp++;
 
   /* combine the exponent and the mantissa */
-  ans.i = (exp << 23) | mant;
+  ans.i = (exp << 52) | mant;
   return ans.f;
 }
 

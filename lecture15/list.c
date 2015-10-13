@@ -34,34 +34,69 @@ void print_list(Node *head) {
 int pop(Node **head) {
     int retval;
     Node *next_node;
+    Node *first = *head;
 
-    if (*head == NULL) {
+    if (first == NULL) {
         return -1;
     }
 
-    next_node = (*head)->next;
-    retval = (*head)->val;
-    free(*head);
-    *head = next_node;
+    next_node = (first)->next;
+    retval = (first)->val;
+    free(first);
+    *head = next_node; //different behavior here
 
     return retval;
 }
 
 // Add a new element to the beginning of the list.
 void push(Node **head, int val) {
-    // FILL THIS IN!
+    Node *first = make_node(val, *head);
+    *head = first;
 }
 
 // Remove the first element with the given value; return the number
 // of nodes removed.
 int remove_by_value(Node **head, int val) {
     // FILL THIS IN!
+    Node *prev = NULL;
+    Node *curr = *head;
+    while (curr != NULL){
+        if (curr->val == val){
+            if (curr->next != NULL){
+                prev->next = curr->next;
+                prev = curr;
+                curr = curr->next;
+            }
+            else {
+                prev->next = NULL;
+                break;
+            }
+        }
+        else {
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+
     return 0;
 }
 
 // Reverse the elements of the list without allocating new nodes.
 void reverse(Node **head) {
     // FILL THIS IN!
+    Node *last = NULL;
+    Node *curr = *head;
+    Node *next;
+
+    while (curr != NULL){
+        next = curr->next;
+        curr->next = last;
+        last = curr;
+        curr = next;
+    }
+
+    *head = last;
+
 }
 
 

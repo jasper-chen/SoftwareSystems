@@ -8,6 +8,8 @@ License: Creative Commons Attribution-ShareAlike 3.0
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+
 
 
 // VALUE: represents a value in a key-value pair
@@ -17,8 +19,8 @@ License: Creative Commons Attribution-ShareAlike 3.0
 typedef struct {
     enum Type {INT, STRING} type;
     union {
-	int i;
-	char *s;
+    	int i;
+    	char *s;
     };
 } Value;
 
@@ -98,6 +100,7 @@ void print_hashable(Hashable *hashable)
 {
     printf ("key %p\n", hashable->key);
     printf ("hash %p\n", hashable->hash);
+
 }
 
 
@@ -133,24 +136,28 @@ int hash_hashable(Hashable *hashable)
 /* Compares integers. */
 int equal_int (void *ip, void *jp)
 {
-    // FIX ME!
-    return 0;
+	//FIXED
+    return *((int *) ip) == *((int *) jp);
 }
 
 
 /* Compares strings. */
 int equal_string (void *s1, void *s2)
 {
-    // FIX ME!
-    return 0;
+    // FIXED
+    return !strcmp((char *) s1, (char *) s2);
 }
 
 
 /* Compares Hashables. */
 int equal_hashable(Hashable *h1, Hashable *h2)
 {
-    // FIX ME!
-    return 0;
+    // FIXED
+    if (h1->equal == h2->equal) {
+        return h1->equal(h1->key, h2-> key);
+    } else {
+        return 0;
+    }
 }
 
 
@@ -175,8 +182,6 @@ Hashable *make_hashable_string (char *s)
     return make_hashable((void *) s, hash_string, equal_string);
 }
 
-
-
 // NODE: a node in a list of key-value pairs
 
 typedef struct node {
@@ -190,7 +195,11 @@ typedef struct node {
 Node *make_node(Hashable *key, Value *value, Node *next)
 {
     // FIX ME!
-    return NULL;
+    Node *n = (Node *) malloc (sizeof(Node));
+    n->key = key;
+    n->value = value;
+    n->next = next;
+    return n;
 }
 
 
@@ -206,7 +215,15 @@ void print_node(Node *node)
 /* Prints all the Nodes in a list. */
 void print_list(Node *node)
 {
-    // FIX ME!
+    if (node == NULL) {
+        return;
+    }
+    Node *n = node;
+    while (n != NULL){
+        print_hashable(n->key);
+        printf("node_value: %p\n", n->value);
+        n = n->next;
+    }
 }
 
 
@@ -223,7 +240,13 @@ Node *prepend(Hashable *key, Value *value, Node *rest)
 /* Looks up a key and returns the corresponding value, or NULL */
 Value *list_lookup(Node *list, Hashable *key)
 {
-    // FIX ME!
+    //FIXED
+    while (list != NULL){
+        if (equal_hashable(list->key,key)){
+            return list->value;
+        }
+        list = list->next;
+    }
     return NULL;
 }
 
@@ -239,8 +262,11 @@ typedef struct map {
 /* Makes a Map with n lists. */
 Map *make_map(int n)
 {
-    // FIX ME!
-    return NULL;
+    // FIXED
+    Map *m = (Map *) malloc (sizeof(Map));
+    m->lists = (Node **) malloc (n * (sizeof (Node *)));
+    m->n = n;
+    return m;
 }
 
 
@@ -248,28 +274,39 @@ Map *make_map(int n)
 void print_map(Map *map)
 {
     int i;
-
     for (i=0; i<map->n; i++) {
-	if (map->lists[i] != NULL) {
-	    printf ("%d\n", i);
-	    print_list (map->lists[i]);
-	}
+    	if (map->lists[i] != NULL) {
+    	    printf ("%d\n", i);
+    	    print_list (map->lists[i]);
+    	}
     }
 }
 
+/* Finds which list a key is in */
+int map_index(Map *map, Hashable *key) {
+    unsigned int hash, step;
+
+    hash = (unsigned int) hash_hashable(key);
+    step = UINT_MAX / map->n;
+    return (int) (hash / step);
+}
 
 /* Adds a key-value pair to a map. */
 void map_add(Map *map, Hashable *key, Value *value)
 {
-    // FIX ME!
+    // FIXED
+    int hash_value = hash_hashable(key) % map->n;
+    Node *l = map->lists[hash_value];
+    map->lists[hash_value] = prepend(key, value, l);
 }
 
 
 /* Looks up a key and returns the corresponding value, or NULL. */
 Value *map_lookup(Map *map, Hashable *key)
 {
-    // FIX ME!
-    return NULL;
+    int hash_value = hash_hashable(key) % map->n;
+    Node *l = map->lists[hash_value];
+    return list_lookup(l, key);
 }
 
 
@@ -287,6 +324,8 @@ int main ()
     Hashable *hashable1 = make_hashable_int (1);
     Hashable *hashable2 = make_hashable_string ("Allen");
     Hashable *hashable3 = make_hashable_int (2);
+
+    print_hashable(hashable1);
 
     // make a list by hand
     Value *value1 = make_int_value (17);

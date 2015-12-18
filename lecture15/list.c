@@ -34,14 +34,16 @@ void print_list(Node *head) {
 int pop(Node **head) {
     int retval;
     Node *next_node;
-    Node *first = *head;
+    
 
-    if (first == NULL) {
+    if (head == NULL) {
         return -1;
     }
 
-    next_node = (first)->next;
-    retval = (first)->val;
+    Node *first = *head;
+
+    next_node = first->next;
+    retval = first->val;
     free(first);
     *head = next_node; //different behavior here
 
@@ -57,18 +59,24 @@ void push(Node **head, int val) {
 // Remove the first element with the given value; return the number
 // of nodes removed.
 int remove_by_value(Node **head, int val) {
-    // FILL THIS IN!
     Node *prev = NULL;
     Node *curr = *head;
+    int count = 0;
+
+    if (curr == NULL) {
+        return 0;
+    }
     while (curr != NULL){
         if (curr->val == val){
             if (curr->next != NULL){
                 prev->next = curr->next;
                 prev = curr;
                 curr = curr->next;
+                count++;
             }
             else {
                 prev->next = NULL;
+                count++;
                 break;
             }
         }
@@ -78,38 +86,36 @@ int remove_by_value(Node **head, int val) {
         }
     }
 
-    return 0;
+    return count;
 }
 
 // Reverse the elements of the list without allocating new nodes.
 void reverse(Node **head) {
-    // FILL THIS IN!
     Node *last = NULL;
     Node *curr = *head;
-    Node *next;
 
     while (curr != NULL){
-        next = curr->next;
+        Node *next = curr->next;
         curr->next = last;
         last = curr;
         curr = next;
     }
 
     *head = last;
-
 }
-
 
 int main() {
     Node *test_list = make_node(1, NULL);
     test_list->next = make_node(2, NULL);
     test_list->next->next = make_node(3, NULL);
     test_list->next->next->next = make_node(4, NULL);
+    test_list->next->next->next->next = make_node(3, NULL);
 
     int retval = pop(&test_list);
     push(&test_list, retval+10);
 
-    remove_by_value(&test_list, 3);
+    int total = remove_by_value(&test_list, 3);
+    printf("nodes removed: %d\n\n",total);
     remove_by_value(&test_list, 7);
 
     reverse(&test_list);

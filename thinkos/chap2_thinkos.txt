@@ -1,0 +1,23 @@
+Chapter 2 Think OS
+
+Processes
+
+1) Give a real-world example of virtualization (ideally not one of the ones in the book).
+
+A retail store is an example of virtualization. If they don't have their product in stock, the sales representative will tell you that you can still purchase it (and have it shipped to you later). 
+
+2) What is the difference between a program and a process?
+
+A program is a collection of instructions that performs a specfic task, whereas a process is an instance of a program.
+
+3) What is the primary purpose of the process abstraction?  What illusion does the process abstraction create?
+
+4) What is the kernel?
+
+The kernel is a part of the OS responsible for core capabilities like creating new threads.
+
+5) What is a daemon?
+
+A process that runs in the background and provides operating system services.
+
+

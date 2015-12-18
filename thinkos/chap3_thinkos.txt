@@ -1,0 +1,54 @@
+Chapter 3
+
+Virtual memory
+
+1) The Georgian alphabet has 33 letters.  How many bit are needed to specify a letter.
+
+You would need 6 bits, since 5 bits only covers 32 letters.
+
+2) In the UTF-16 character encoding, the binary representation of a character can take up to 32 bits.  Ignoring the details of the encoding scheme, how many different characters can be represented?
+
+32 ^ 2 = 1024
+
+3) What is the difference between "memory" and "storage" as defined in Think OS?
+
+Memory is held in the random access memory (RAM) while storage is defined as the hard disk or solid state drive.
+
+4) What is the difference between a GiB and a GB?  What is the percentage difference in their sizes?
+
+GiB is 2^30 bytes, whereas GB is 10^9 bytes. That's about a 7.37% difference.
+
+5) How does the virtual memory system help isolate processes from each other?
+
+A process cannot access data belonging to another process since there is no virtual address that can be generated that maps to physical memory allocated to another process.
+
+6) Why do you think the stack and the heap are usually located at opposite ends of the address space?
+
+The stack adds more addresses downward and the heap adds more addresses upward to efficiently add addresses.
+
+7) What Python data structure would you use to represent a sparse array?
+
+A python dictionary could represent a sparse array.
+
+8) What is a context switch?
+
+A context swtich is when the operating system interupts a running process, save its state and runs another process.
+
+As an exercise, run aspace.c on your computer and compare your results to mine.
+  
+1) Add a second call to malloc and check whether the heap on your system grows up (toward larger addresses). 
+
+Goes up.
+Address of p is 0x7f9ae8404c80
+Address of r is 0x7f9ae8404d00 
+
+2) Add a function that prints the address of a local variable, and check whether the stack grows down.  
+
+Goes down.
+Address of local1 is 0x7fff574c26c8
+Address of local2 is 0x7fff574c26c4
+
+3) Choose a random number between 1 and 32, and allocate two chunks with that size.  How much space is there between them?  Hint: Google knows how to subtract hexadecimal numbers.
+
+Chosen number: 9
+0x40 -> 64 in decimal

@@ -20,7 +20,6 @@ char tracks[][80] = {
     "Flamenco Sketches"
 };
 
-
 /* Finds all tracks that contain the given string.
     Prints track number and title.
     search_for: the user's input of type char array
@@ -77,8 +76,5 @@ int main (int argc, char *argv[])
 
     /*find_track(search_for);*/
     find_track_regex(search_for);
-
-
-
     return 0;
 }
